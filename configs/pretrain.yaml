@@ -1,0 +1,57 @@
+# Four-objective manuscript recipe, not an archived completed experiment.
+seed: 42
+device: auto
+data:
+  num_workers: 0
+model:
+  branch_mode: structure
+  node_dim: 28
+  sequence_dim: 41
+  edge_dim: 27
+  mutation_dim: 0
+  hidden_dim: 128
+  latent_dim: 128
+  num_structure_layers: 3
+  num_sequence_layers: 2
+  num_attention_heads: 8
+  dropout: 0.1
+  flow_steps: 8
+  flow_noise_scale: 0.05
+  num_classes: 3
+  structure_checkpoint: null
+  freeze_structure_encoder: false
+training:
+  epochs: 50
+  learning_rate: 0.0003
+  weight_decay: 1.0e-05
+  gradient_clip: 1.0
+  patience: 20
+  show_progress: true
+  checkpoint_dir: outputs/checkpoints/structure_pretraining
+  top_k_checkpoints: 5
+  external_test_interval: 0
+pretraining:
+  objective: flow
+  data_path: data/pretrain/rcsb_bioa/train/rcsb_bioa_train_graphs_shards.txt
+  validation_path: data/pretrain/rcsb_bioa/validation/rcsb_bioa_validation_graphs_shards.txt
+  batch_size: 128
+  epochs: 50
+  mask_ratio: 0.85
+  random_replace_ratio: 0.15
+  edge_noise_std: 0.5
+  central_weight: 1.0
+  flow_weight: 1.0
+  transport_weight: 0.1
+  contrastive_weight: 0.2
+  contrastive_temperature: 0.1
+  latent_dim: 128
+  validation_fraction: 0.05
+  deduplicate_proteins: false
+  local_crop_radius: null
+  local_crop_max_nodes: null
+  local_crop_neighbors: 32
+  checkpoint_path: outputs/checkpoints/structure_pretraining/structure_pretrained.pt
+  replacement_weight: 0.0
+  geometry_weight: 0.0
+  contact_weight: 0.0
+  adaptive_loss_weighting: false

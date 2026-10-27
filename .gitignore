@@ -1,0 +1,44 @@
+# Local environments and Python build/test artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+
+# Runtime assets are released separately, subject to their licenses
+/data/*
+!/data/README.md
+/checkpoints/*
+!/checkpoints/README.md
+/outputs/
+/results/
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.log
+
+# Credentials, personal settings, drafts and operating-system files
+.env
+.env.*
+*.pem
+*.key
+.aws/
+.codex/
+.agents/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.docx
+~$*

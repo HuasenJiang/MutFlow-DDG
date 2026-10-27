@@ -1,0 +1,48 @@
+seed: 42
+device: cuda:0
+data:
+  num_workers: 0
+model:
+  branch_mode: structure
+  node_dim: 28
+  edge_dim: 27
+  mutation_dim: 0
+  mutation_feature_mode: none
+  hidden_dim: 128
+  latent_dim: 128
+  num_structure_layers: 3
+  flow_steps: 8
+  flow_noise_scale: 0.05
+training:
+  learning_rate: 0.0003
+  weight_decay: 0.0005
+  gradient_clip: 1.0
+  show_progress: true
+pretraining:
+  objective: mutation_flow
+  data_path: data/pretrain/rcsb_bioa/train/rcsb_bioa_train_graphs_shards.txt
+  validation_path: data/pretrain/rcsb_bioa/validation/rcsb_bioa_validation_graphs_shards.txt
+  batch_size: 128
+  epochs: 50
+  mask_ratio: 0.8
+  random_replace_ratio: 0.1
+  edge_noise_std: 0.5
+  central_weight: 1.0
+  flow_weight: 1.0
+  transport_weight: 0.1
+  contrastive_weight: 0.2
+  replacement_weight: 0.5
+  geometry_weight: 0.2
+  contact_weight: 0.1
+  # Fixed positive weights keep the validation objective comparable across
+  # epochs. The former uncertainty weighting drove easy-task weights into the
+  # thousands and made the total loss negative.
+  adaptive_loss_weighting: false
+  centers_per_protein: 4
+  validation_centers_per_protein: 8
+  fixed_validation_centers: true
+  deduplicate_proteins: false
+  local_crop_radius: null
+  local_crop_max_nodes: null
+  local_crop_neighbors: 32
+  checkpoint_path: outputs/checkpoints/structure_mutation_flow_protocol/pretrained_fixed.pt

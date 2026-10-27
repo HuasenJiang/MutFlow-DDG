@@ -1,0 +1,112 @@
+# Portable five-benchmark recipe; model and downstream loss settings retain the legacy implementation.
+seed: 42
+device: auto
+data:
+  sample_set: current
+  train_dataset_name: s2648
+  train_path: data/ddg_sequence_aligned/s2648/samples/s2648_pythia_patch32_paired.pkl
+  validation_path: null
+  sequence_feature_source: esm
+  esm_cache_dir: data/ddg_sequence_aligned/s2648/esm
+  esm_cache_fallback_dirs:
+  - data/ddg_recovered/s2648/esm
+  require_esm: true
+  batch_size: 32
+  validation_fraction: 0.1
+  split_level: sample
+  add_reverse_mutations: true
+  num_workers: 0
+  max_attention_elements: 4000000
+  external_tests:
+  - name: s250
+    dataset_name: s250
+    path: data/ddg_recovered/s250/samples/s250_pythia_patch32_paired.pkl
+    esm_cache_dir: data/ddg_recovered/s250/esm
+    evaluation_scope: full_set
+    batch_size: 16
+    max_attention_elements: 4000000
+  - name: s605
+    dataset_name: s605
+    path: data/ddg_recovered/s605/samples/s605_pythia_patch32_paired.pkl
+    esm_cache_dir: data/ddg_recovered/s605/esm
+    esm_layout: standard
+    evaluation_scope: full_set
+    batch_size: 16
+    max_attention_elements: 4000000
+  - name: s1925
+    dataset_name: s1925
+    path: data/ddg_recovered/s1925/samples/s1925_pythia_patch32_paired.pkl
+    esm_cache_dir: data/ddg/s1925/esm
+    esm_layout: standard
+    evaluation_scope: full_set
+    batch_size: 16
+    max_attention_elements: 4000000
+  - name: s350
+    dataset_name: s350
+    path: data/ddg/s350/samples/s350_pythia_patch32_paired.pkl
+    esm_cache_dir: data/ddg/s350/esm
+    esm_layout: standard
+    evaluation_scope: full_set
+    batch_size: 16
+    max_attention_elements: 4000000
+  - name: ssym
+    dataset_name: ssym
+    path: data/ddg/ssym/samples/ssym_pythia_patch32_paired.pkl
+    esm_cache_dir: data/ddg/ssym/esm
+    esm_layout: standard
+    evaluation_scope: full_set
+    batch_size: 16
+    max_attention_elements: 4000000
+    report_directions: true
+model:
+  branch_mode: both
+  node_dim: 28
+  sequence_dim: 1280
+  edge_dim: 27
+  mutation_dim: 0
+  mutation_feature_mode: none
+  hidden_dim: 128
+  latent_dim: 128
+  num_structure_layers: 3
+  num_sequence_layers: 2
+  num_attention_heads: 8
+  dropout: 0.1
+  flow_steps: 8
+  flow_noise_scale: 0.05
+  num_classes: 3
+  structure_checkpoint: outputs/checkpoints/structure_pretraining/structure_pretrained.pt
+  freeze_structure_encoder: false
+  transfer_pretrained_flow: false
+  antisymmetric_output: false
+loss:
+  regression: 1.0
+  classification: 0.2
+  ranking: 0.1
+  symmetry: 0.0
+  transport: 0.1
+  uncertainty: 0.1
+  flow: 0.5
+  epistasis: 0.0
+  huber_delta: 1.0
+  neutral_threshold: 0.5
+  ddg_convention: positive_destabilizing
+training:
+  epochs: 250
+  learning_rate: 0.0003
+  structure_encoder_learning_rate: 0.0003
+  new_layers_learning_rate: 0.0003
+  weight_decay: 1.0e-05
+  warmup_epochs: 0
+  scheduler: plateau
+  freeze_structure_epochs: 0
+  gradual_unfreeze: false
+  gradient_clip: 1.0
+  patience: 20
+  early_stopping_min_delta: 0.0
+  require_protein_level_validation: false
+  show_progress: false
+  checkpoint_dir: outputs/checkpoints/mutflow_ddg
+  top_k_checkpoints: 5
+  external_test_interval: 0
+pretraining:
+  objective: flow
